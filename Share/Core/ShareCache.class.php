@@ -8,8 +8,8 @@ class ShareCache
 		if (self::$obj == null) {
 			$config = ShareConfig();
 			$memcache = new Memcached();
-			$memcahce -> connect($config['MEMCACHE_CONFIG'][0], $config['MEMCACHE_CONFIG'][1]);
-			self::$obj = $memcahce;
+			$memcache -> connect($config['MEMCACHE_CONFIG'][0], $config['MEMCACHE_CONFIG'][1]);
+			self::$obj = $memcache;
 		}
 		return self::$obj;
 	}
