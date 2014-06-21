@@ -21,8 +21,8 @@ class ShareCore
 		$this->callModule = $moduleName;
 	}
 
-	public function __call($func, $args) {
-		
+	public function __call($func, $args) 
+	{	
 		//初始化调用来源
 		$this->initCallResource();
 		
@@ -36,31 +36,35 @@ class ShareCore
 		if (!method_exists($desc, $func)) {
 			$this->error(sprintf("method %s not exists in %s", $func, $this->callModule));
 		}
+		
+		$timestart = microtime(true);
 		$result = $desc->$func($args);
+		$timeend = microtime(true);		
+		$spendtime = number_format(($timeend - $timestart)*1000, 4); //'毫秒'
 		
 		//记录调用来源
-		$this->logCallResource($func, $args);
+		$this->logCallResource($func, $args, $spendtime);
 				
 		return $result;
 	}
 	
-	private function logCallResource($func, $args)
+	private function logCallResource($func, $args, $spendtime)
 	{
 		//记录调用了哪个共享api
 		//记录调用来源的项目名，模块名，方法名
 		if (isset($_GET['debug'])) {
-			echo '<br> call source info:=>';
-			echo '<br>' . sprintf('call api: %s.%s', $this->callModule, $func);
+			echo '<br>' . sprintf('api: %s.%s', $this->callModule, $func);
 			echo '<br> args: ' . var_export($args, true); 
 			echo '<br> appName: ' . $this->appName;
 			echo '<br> moduleName: ' . $this->moduleName;
 			echo '<br> actionName: ' . $this->actionName;
+			echo '<br> spentime: ' . $spendtime;
 			echo '<br><br>';
 		}
 		
 		$config = ShareConfig();
 		if (!$config['ENABLE_CALLSOURCE_LOG']) {
-			//return;
+			return;
 		}
 
 		$cachekey = sprintf('%s|%s|%s|%s.%s', $this->appName, $this->moduleName, $this->actionName, $this->callModule, $func);
@@ -68,10 +72,14 @@ class ShareCore
 		//小于一天，不入库
 		if ((time() - $val) < 3600 * 24) {
 			return ;	
+		} else {	
+			//入库操作
+			$re = ShareCallSource::insert($this->appName, $this->moduleName, $this->actionName, 
+				$this->callModule.'.'.$func, serialize($args), $spendtime);	
+			if ($re) {
+				ShareCache::set($cachekey, time());
+			}
 		}
-
-		//入库操作
-		ShareCallResource::insert($this->appName, $this->moduleName, $this->actionName, $this->callModule.'.'.$func);		
 	}
 
 	private function getProjectModuleObj()

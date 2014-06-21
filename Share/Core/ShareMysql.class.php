@@ -34,14 +34,21 @@ class ShareMysql
 		return $sql;
 	}
 	
-	static function execSql($sql)
+	static function execSql($sql, $insertid=true)
 	{
 		self::connect();
 		$re = mysql_query($sql, self::$conn);
-		if (!$re) {
-			$err = sprintf('MySQL Error [%s] [%s] [%s]', $sql, mysql_errno(self::$conn) ,mysql_error(self::$conn));
+		var_dump($re);
+		if ($re == false) {
+			$err = sprintf('MySQL Error [%s] [%s] [%s]', mysql_errno(self::$conn) ,mysql_error(self::$conn), $sql);
+			ShareError($err);
+		}
+		$res = true;
+		if ($insertid) {
+			$res = mysql_insert_id(self::$conn);
+			var_dump($res);
 		}
 		self::close();
-		return true;
+		return $res;
 	}
 }

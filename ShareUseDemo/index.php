@@ -1,7 +1,6 @@
 <?php
 
-
-include '../Share/Share.php';
+require '../Share/Share.php';
 
 define('APP_NAME', 'unittest');			//µ¥Ôª²âÊÔ
 define('MODULE_NAME', 'testAsk');

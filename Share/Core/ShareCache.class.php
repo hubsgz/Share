@@ -7,19 +7,24 @@ class ShareCache
 	{
 		if (self::$obj == null) {
 			$config = ShareConfig();
-			$memcache = new Memcached();
-			$memcache -> connect($config['MEMCACHE_CONFIG'][0], $config['MEMCACHE_CONFIG'][1]);
-			self::$obj = $memcache;
+			$o = new Memcache();
+			$re = $o -> connect($config['MEMCACHE_CONFIG'][0], $config['MEMCACHE_CONFIG'][1]);
+			//var_dump($re);
+			
+			//$o->set('aaa|||||fsegesgse|||', time());
+			//echo $o->get('aaa|||||fsegesgse|||');
+			//exit;
+			self::$obj = $o;
 		}
 		return self::$obj;
 	}
 	static function get($key) 
 	{
-		self::memcache()->get($key);
+		return self::memcache()->get($key);
 	}
 	static function set($key, $val) 
 	{
-		self::memcache()->set($key, $val);
+		return self::memcache()->set($key, $val);
 	}
 
 }
