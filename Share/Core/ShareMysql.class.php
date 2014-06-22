@@ -25,6 +25,64 @@ class ShareMysql
 		mysql_close(self::$conn);
 	}
 
+	static function getAll($sql)
+	{
+		self::connect();
+		$query = self::_query($sql);
+		
+		$arr = array();
+		while ($row = mysql_fetch_assoc($query)) {
+			$arr[] = $row;
+		}
+
+		self::close();
+		return $arr;
+	}
+
+	static function getOne($sql)
+	{
+		self::connect();
+		$query = self::_query($sql);
+
+		$res = '';
+		
+		$row = mysql_fetch_row($query);
+		if ($row !== false)	{
+			$res = $row[0];
+		} else {
+			$res = '';
+		}
+
+		self::close();
+		return $res;
+	}
+
+	static function execSql($sql, $insertid=true)
+	{
+		self::connect();
+		self::_query($sql);
+
+		$res = true;
+		if ($insertid) {
+			$res = mysql_insert_id(self::$conn);
+		}
+		self::close();
+		return $res;
+	}
+
+	static function _query($sql)
+	{
+		$re = mysql_query($sql, self::$conn);
+		if ($re == false) {
+			$err = sprintf('MySQL Error [%s] [%s] [%s]', mysql_errno(self::$conn) ,mysql_error(self::$conn), $sql);
+			ShareError($err);
+		}
+		return $re;
+	}
+}
+
+class ShareMysqlTool
+{
 	static function insertSql($table, $vals)
 	{
 		$fields = array_keys($vals);
@@ -34,21 +92,14 @@ class ShareMysql
 		return $sql;
 	}
 	
-	static function execSql($sql, $insertid=true)
+	static function querySql($table, $where)
 	{
-		self::connect();
-		$re = mysql_query($sql, self::$conn);
-		var_dump($re);
-		if ($re == false) {
-			$err = sprintf('MySQL Error [%s] [%s] [%s]', mysql_errno(self::$conn) ,mysql_error(self::$conn), $sql);
-			ShareError($err);
+		$arr = array("1=1");
+		foreach ($where as $k=>$v) {
+			$arr[] = " $k = '$v' ";
 		}
-		$res = true;
-		if ($insertid) {
-			$res = mysql_insert_id(self::$conn);
-			var_dump($res);
-		}
-		self::close();
-		return $res;
+
+		$sql = "select * from {$table} where ". implode(' and ', $arr) . ";"; 
+		return $sql;
 	}
 }

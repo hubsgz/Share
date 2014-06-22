@@ -1,5 +1,7 @@
 <?php
-
+/**
+ *	核心类
+ */
 
 class ShareCore
 {	
@@ -24,7 +26,7 @@ class ShareCore
 	public function __call($func, $args) 
 	{	
 		//初始化调用来源
-		$this->initCallResource();
+		$this->initCallSource();
 		
 		//获取模块实例
 		list($error, $desc) = $this->getProjectModuleObj();
@@ -44,8 +46,21 @@ class ShareCore
 		
 		//记录调用来源
 		$this->logCallResource($func, $args, $spendtime);
+
+		$this->unitTestPrint($func, $args, $spendtime);
 				
 		return $result;
+	}
+
+	private function unitTestPrint($func, $args, $spendtime)
+	{
+		if (!$this->isUnitTest()) {
+			return;
+		}		
+		echo "\n".'<br>' . sprintf('Test Api: %s.%s', $this->callModule, $func);
+		echo "\n".'<br> args: ' . var_export($args, true); 
+		echo "\n".'<br> spentime: ' . $spendtime . ' msec';
+		echo "\n\n".'<br><br>';
 	}
 	
 	private function logCallResource($func, $args, $spendtime)
@@ -61,6 +76,10 @@ class ShareCore
 			echo '<br> spentime: ' . $spendtime;
 			echo '<br><br>';
 		}
+
+		if ($this->isUnitTest()) {	//单元测试不记录
+			return;
+		}
 		
 		$config = ShareConfig();
 		if (!$config['ENABLE_CALLSOURCE_LOG']) {
@@ -74,12 +93,16 @@ class ShareCore
 			return ;	
 		} else {	
 			//入库操作
-			$re = ShareCallSource::insert($this->appName, $this->moduleName, $this->actionName, 
-				$this->callModule.'.'.$func, serialize($args), $spendtime);	
+			$re = ShareCallSource::insert($this->appName, $this->moduleName, $this->actionName, $this->callModule.'.'.$func);	
 			if ($re) {
 				ShareCache::set($cachekey, time());
 			}
 		}
+	}
+
+	private function isUnitTest()
+	{
+		return $this->appName == 'ShareUnitTest';
 	}
 
 	private function getProjectModuleObj()
@@ -111,14 +134,20 @@ class ShareCore
 		require_once($classFile);
 
 		if (!class_exists($arr[1])) {
-			return array(2, "Class 'Browse' not found");
-		}
+			return array(2, "Class '".$arr[1]."' not found");
+		}		
 		$obj = new $arr[1]();
+		
+		//强制继承ShareCommon类
+		if (is_subclass_of($obj, 'ShareCommon') == false) {
+			ShareError("you must extends from ShareCommon!");
+		}
+
 		$this->moduleObjCache[$callModule] = $obj;
 		return array(0, $this->moduleObjCache[$callModule]);
 	}
 
-	private function initCallResource()
+	private function initCallSource()
 	{
 		if (!defined('APP_NAME')) {
 			self::error("APP_NAME is not defined"); 

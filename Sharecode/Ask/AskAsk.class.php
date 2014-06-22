@@ -2,14 +2,7 @@
 /**
  *	ask项目共享代码公共父类
  */
-class AskAsk
+class AskAsk extends ShareCommon
 {
-	/**
-	*	最新n条咨询
-	*/
-	public function newQuestionList1($num)
-	{
-		//sleep(2);
-		return array(111, 222);
-	}
+
 }
