@@ -15,13 +15,13 @@ class ShareCallSource
 			'calltime' => time()			
 		);
 		
-		$sql = ShareMysqlTool::insertSql('sharedb.callsource_log', $insertdata); 
+		$sql = ShareMysqlTool::insertSql('sharedb.share_callsource', $insertdata); 
 		return ShareMysql::execSql($sql);
 	}
 	
 	static function getAll($where=array())
 	{
-		$sql = ShareMysqlTool::querySql('sharedb.callsource_log', $where); 
+		$sql = ShareMysqlTool::querySql('sharedb.share_callsource', $where); 
 		$list = ShareMysql::getAll($sql);
 		foreach($list as $k=>$v) {
 			//$implode(',', unserialize($v['args']))

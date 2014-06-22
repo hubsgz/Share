@@ -1,0 +1,34 @@
+##
+##  每个共享方法， 每天只记录一次， 仅用于查询某共享方法在哪些地方被调用过
+##
+
+drop table if exists `share_callsource`;
+CREATE TABLE `share_callsource` (
+  `id` int(11) NOT NULL auto_increment COMMENT '主键',
+  `appname` varchar(50) NOT NULL DEFAULT '' COMMENT '来源项目',
+  `modulename` varchar(50) NOT NULL DEFAULT '' COMMENT '来源模块',  
+  `actionname` varchar(50) NOT NULL DEFAULT '' COMMENT '来源action',
+  `apiname` varchar(50) NOT NULL DEFAULT '' COMMENT '所调用的api',
+  `calltime` int(11) default 0 COMMENT '调用时间',      
+  PRIMARY KEY  (`id`),
+  KEY `apiname` (`apiname`)      
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='调用来源日志表';
+
+##
+##  当检测到某个共享方法运行时间超过配置中指定的时间时，记录到此表, 供性能优化参考
+##
+
+drop table if exists `share_badcode`;
+CREATE TABLE `share_badcode` (
+  `id` int(11) NOT NULL auto_increment COMMENT '主键',
+  `s_appname` varchar(50) NOT NULL DEFAULT '' COMMENT '项目',
+  `s_modulename` varchar(50) NOT NULL DEFAULT '' COMMENT '模块',  
+  `s_actionname` varchar(50) NOT NULL DEFAULT '' COMMENT 'action',
+  `apiname` varchar(50) NOT NULL DEFAULT '' COMMENT '所调用的api',
+  `args` varchar(50) NOT NULL DEFAULT '' COMMENT '调用参数',
+  `calltime` int(11) default 0 COMMENT '调用时间',  
+  `spendtime` float(7,4) default 0 COMMENT '运行时间',    
+  PRIMARY KEY  (`id`),
+  KEY `apiname` (`apiname`)      
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='慢共享方法记录表';
+
