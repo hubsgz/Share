@@ -5,13 +5,13 @@
 drop table if exists `share_callsource`;
 CREATE TABLE `share_callsource` (
   `id` int(11) NOT NULL auto_increment COMMENT '主键',
-  `appname` varchar(50) NOT NULL DEFAULT '' COMMENT '来源项目',
-  `modulename` varchar(50) NOT NULL DEFAULT '' COMMENT '来源模块',  
-  `actionname` varchar(50) NOT NULL DEFAULT '' COMMENT '来源action',
-  `apiname` varchar(50) NOT NULL DEFAULT '' COMMENT '所调用的api',
+  `f_project` varchar(50) NOT NULL DEFAULT '' COMMENT '来源项目',
+  `f_module` varchar(50) NOT NULL DEFAULT '' COMMENT '来源模块',  
+  `f_method` varchar(50) NOT NULL DEFAULT '' COMMENT '来源方法',
+  `s_api` varchar(50) NOT NULL DEFAULT '' COMMENT '所调用的共享api, 由共享项目.共享模块.共享方法组成',
   `calltime` int(11) default 0 COMMENT '调用时间',      
   PRIMARY KEY  (`id`),
-  KEY `apiname` (`apiname`)      
+  KEY `s_api` (`s_api`)      
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='调用来源日志表';
 
 ##
@@ -21,14 +21,23 @@ CREATE TABLE `share_callsource` (
 drop table if exists `share_badcode`;
 CREATE TABLE `share_badcode` (
   `id` int(11) NOT NULL auto_increment COMMENT '主键',
-  `s_appname` varchar(50) NOT NULL DEFAULT '' COMMENT '项目',
-  `s_modulename` varchar(50) NOT NULL DEFAULT '' COMMENT '模块',  
-  `s_actionname` varchar(50) NOT NULL DEFAULT '' COMMENT 'action',
-  `apiname` varchar(50) NOT NULL DEFAULT '' COMMENT '所调用的api',
-  `args` varchar(50) NOT NULL DEFAULT '' COMMENT '调用参数',
+  `f_project` varchar(50) NOT NULL DEFAULT '' COMMENT '来源项目',
+  `f_module` varchar(50) NOT NULL DEFAULT '' COMMENT '来源模块',  
+  `f_method` varchar(50) NOT NULL DEFAULT '' COMMENT '来源方法',
+  `s_project` varchar(50) NOT NULL DEFAULT '' COMMENT '共享项目',
+  `s_module` varchar(50) NOT NULL DEFAULT '' COMMENT '共享模块',  
+  `s_method` varchar(50) NOT NULL DEFAULT '' COMMENT '共享方法',
+  `s_api`  varchar(50) NOT NULL DEFAULT '' COMMENT '共享api, 由共享项目.共享模块.共享方法组成',
+  `args` varchar(150) NOT NULL DEFAULT '' COMMENT '调用参数',
   `calltime` int(11) default 0 COMMENT '调用时间',  
   `spendtime` float(7,4) default 0 COMMENT '运行时间',    
   PRIMARY KEY  (`id`),
-  KEY `apiname` (`apiname`)      
+  KEY `f_project` (`f_project`),    
+  KEY `f_module` (`f_module`),
+  KEY `f_method` (`f_method`),
+  KEY `s_project` (`s_project`),
+  KEY `s_module` (`s_module`),
+  KEY `s_method` (`s_method`),
+  KEY `s_api` (`s_api`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='慢共享方法记录表';
 

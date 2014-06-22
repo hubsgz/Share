@@ -6,7 +6,9 @@ class AskBrowse extends AskAsk
 	
 	public function newQuestionList($num)
 	{
-		sleep(1);
+		$this->cacheTime(10);
+		sleep(3);
+
 		return array(111, 222);
 	}
 

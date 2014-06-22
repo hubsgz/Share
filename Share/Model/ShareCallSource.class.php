@@ -5,23 +5,25 @@
 
 class ShareCallSource
 {
-	static function insert($appName, $moduleName, $actionName, $apiName)
+	static $table = 'sharedb.share_callsource';
+
+	static function insert($f_project, $f_module, $f_method, $s_api)
 	{
 		$insertdata = array(
-			'appname' => $appName,
-			'modulename' => $moduleName,
-			'actionName' => $actionName,
-			'apiname' => $apiName,
+			'f_project' => $f_project,
+			'f_module' => $f_module,
+			'f_method' => $f_method,
+			's_api' => $s_api,
 			'calltime' => time()			
 		);
 		
-		$sql = ShareMysqlTool::insertSql('sharedb.share_callsource', $insertdata); 
+		$sql = ShareMysqlTool::insertSql(self::$table, $insertdata); 
 		return ShareMysql::execSql($sql);
 	}
 	
 	static function getAll($where=array())
 	{
-		$sql = ShareMysqlTool::querySql('sharedb.share_callsource', $where); 
+		$sql = ShareMysqlTool::querySql(self::$table, $where); 
 		$list = ShareMysql::getAll($sql);
 		foreach($list as $k=>$v) {
 			//$implode(',', unserialize($v['args']))

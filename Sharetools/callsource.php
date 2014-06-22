@@ -3,9 +3,9 @@
 require '../Share/Share.php';
 
 $where = array();
-$apiname = ShareGetStr('apiname');
+$apiname = ShareGetStr('s_api');
 if ($apiname != '') {
-	$where['apiname'] = $apiname;
+	$where['s_api'] = $apiname;
 	$list = ShareCallSource::getAll($where);
 } else {
 	$list = array();
@@ -45,10 +45,10 @@ if ($apiname != '') {
 	<?php 
 	foreach($list as $v){
 		echo "<tr>";
-		echo "<td>".$v['appname']."</td>";
-		echo "<td>".$v['modulename']."</td>";
-		echo "<td>".$v['actionname']."</td>";
-		echo "<td>".$v['apiname']."</td>";
+		echo "<td>".$v['f_project']."</td>";
+		echo "<td>".$v['f_module']."</td>";
+		echo "<td>".$v['f_method']."</td>";
+		echo "<td>".$v['s_api']."</td>";
 		echo "<td>". date('Y-m-d H:i:s', $v['calltime'])."</td>";
 		echo "</tr>";
 	}

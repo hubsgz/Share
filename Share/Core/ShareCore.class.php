@@ -5,13 +5,13 @@
 
 class ShareCore
 {	
-	private $appName;					//项目名称
-	private $moduleName;				//项目下的模块名
-	private $actionName;				//方法名
-	private $apiname;					//api名称  =  项目名.模块名.方法名
+	private $f_project;					//调用来源名称
+	private $f_module;				//调用来源模块
+	private $f_action;				//调用来源方法
+	private $s_api;					//api名称  =  共享项目名.共享模块名.共享方法名
 
 	private $moduleObjCache = array();			//项目模块对象缓存
-	private $callModule = '';					//要调用的项目模块  =  项目名.模块名
+	private $callModule = '';					//要调用的项目模块  =  共享项目名.共享模块名
 	
 	public function setCallModule($moduleName)
 	{
@@ -39,16 +39,31 @@ class ShareCore
 			$this->error(sprintf("method %s not exists in %s", $func, $this->callModule));
 		}
 		
-		$timestart = microtime(true);
-		$result = $desc->$func($args);
-		$timeend = microtime(true);		
-		$spendtime = number_format(($timeend - $timestart)*1000, 4); //'毫秒'
-		
-		//记录调用来源
-		$this->logCallResource($func, $args, $spendtime);
+		$cachekey = md5($this->callModule.$func.serialize($args));
+		$result = ShareCache::get($cachekey);
+		if ($result === false || $this->isUnitTest()) {
+			$timestart = microtime(true);
+			$result = $desc->$func($args);
+			$timeend = microtime(true);		
+			$spendtime = number_format(($timeend - $timestart)*1000, 4, '.', ''); //'毫秒'
 
-		$this->unitTestPrint($func, $args, $spendtime);
-				
+			if ($desc->cacheTime() > 0) {
+				ShareCache::set($cachekey, serialize($result), $desc->cacheTime());
+			}
+
+			//记录调用来源
+			$this->logCallResource($func, $args, $spendtime);
+
+			$this->logBadcode($func, $args, $spendtime);
+
+			$this->unitTestPrint($func, $args, $spendtime);
+		} else {
+			if (ShareDebug()) {
+				echo "\n<br>from cache<br>";
+			}
+			$result = unserialize($result);
+		}
+	
 		return $result;
 	}
 
@@ -62,17 +77,26 @@ class ShareCore
 		echo "\n".'<br> spentime: ' . $spendtime . ' msec';
 		echo "\n\n".'<br><br>';
 	}
+
+	private function logBadcode($func, $args, $spendtime)
+	{
+		//记录慢的共享方法
+		if (round($spendtime, 4) >= ShareConfig('SLOW_TIME')) {			
+			ShareBadcode::insert($this->f_project, $this->f_module, $this->f_method, $this->callModule.'.'.$func, 
+				serialize($args), $spendtime);
+		}
+	}
 	
 	private function logCallResource($func, $args, $spendtime)
 	{
 		//记录调用了哪个共享api
 		//记录调用来源的项目名，模块名，方法名
-		if (isset($_GET['debug'])) {
+		if (ShareDebug()) {
 			echo '<br>' . sprintf('api: %s.%s', $this->callModule, $func);
 			echo '<br> args: ' . var_export($args, true); 
-			echo '<br> appName: ' . $this->appName;
-			echo '<br> moduleName: ' . $this->moduleName;
-			echo '<br> actionName: ' . $this->actionName;
+			echo '<br> from project: ' . $this->f_project;
+			echo '<br> from module: ' . $this->f_module;
+			echo '<br> from method: ' . $this->f_method;
 			echo '<br> spentime: ' . $spendtime;
 			echo '<br><br>';
 		}
@@ -80,29 +104,29 @@ class ShareCore
 		if ($this->isUnitTest()) {	//单元测试不记录
 			return;
 		}
-		
+
 		$config = ShareConfig();
 		if (!$config['ENABLE_CALLSOURCE_LOG']) {
 			return;
 		}
 
-		$cachekey = sprintf('%s|%s|%s|%s.%s', $this->appName, $this->moduleName, $this->actionName, $this->callModule, $func);
+		$cachekey = sprintf('callsource_%s|%s|%s|%s.%s', $this->f_project, $this->f_module, $this->f_method, $this->callModule, $func);
 		$val = ShareCache::get($cachekey);
 		//小于一天，不入库
 		if ((time() - $val) < 3600 * 24) {
 			return ;	
 		} else {	
 			//入库操作
-			$re = ShareCallSource::insert($this->appName, $this->moduleName, $this->actionName, $this->callModule.'.'.$func);	
+			$re = ShareCallSource::insert($this->f_project, $this->f_module, $this->f_method, $this->callModule.'.'.$func);	
 			if ($re) {
-				ShareCache::set($cachekey, time());
+				ShareCache::set($cachekey, time(), 3600*24);
 			}
 		}
 	}
 
 	private function isUnitTest()
 	{
-		return $this->appName == 'ShareUnitTest';
+		return $this->f_project == 'ShareUnitTest';
 	}
 
 	private function getProjectModuleObj()
@@ -164,9 +188,9 @@ class ShareCore
 			return false;
 		}
 		
-		$this->appName = APP_NAME;
-		$this->moduleName = MODULE_NAME;
-		$this->actionName = ACTION_NAME;
+		$this->f_project = APP_NAME;
+		$this->f_module = MODULE_NAME;
+		$this->f_method = ACTION_NAME;
 		return true;
 	}
 

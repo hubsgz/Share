@@ -3,10 +3,10 @@
 require '../Share/Share.php';
 
 $where = array();
-$apiname = ShareGetStr('apiname');
+$apiname = ShareGetStr('s_api');
 if ($apiname != '') {
-	$where['apiname'] = $apiname;
-	$list = ShareBadcodelog::getAll($where);
+	$where['s_api'] = $apiname;
+	$list = ShareBadcode::getAll($where);
 } else {
 	$list = array();
 }

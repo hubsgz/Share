@@ -22,9 +22,9 @@ class ShareCache
 	{
 		return self::memcache()->get($key);
 	}
-	static function set($key, $val) 
+	static function set($key, $val, $time=0) 
 	{
-		return self::memcache()->set($key, $val);
+		return self::memcache()->set($key, $val, false, $time);
 	}
 
 }
