@@ -41,3 +41,18 @@ CREATE TABLE `share_badcode` (
   KEY `s_api` (`s_api`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='慢共享方法记录表';
 
+##
+##  共享方法文档表(不用数据库， 改用文件)
+##
+CREATE TABLE `share_doc_method` (
+  `id` int(11) NOT NULL auto_increment COMMENT '主键',
+  `s_project` varchar(50) NOT NULL DEFAULT '' COMMENT '共享项目',
+  `s_module` varchar(50) NOT NULL DEFAULT '' COMMENT '共享模块',
+  `s_method` varchar(50) NOT NULL DEFAULT '' COMMENT '共享方法',
+  `s_module_doc` varchar(255) NOT NULL DEFAULT '' COMMENT '共享模块文档',
+  `s_method_doc` varchar(255) NOT NULL DEFAULT '' COMMENT '共享方法文档',
+  PRIMARY KEY  (`id`),
+  KEY `s_project` (`s_project`),
+  KEY `s_module` (`s_module`),
+  KEY `s_method` (`s_method`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='共享方法文档方法表';

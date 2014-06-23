@@ -13,7 +13,6 @@ function ShareConfig($f='')
 	}	
 }
 
-
 function ShareError($msg)
 {
 	echo "\n".'<br>-----Share error report-----<br>';
