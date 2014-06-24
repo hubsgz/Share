@@ -44,3 +44,14 @@ function ShareDebug()
 {
 	return isset($_REQUEST['sharedebug']);
 }
+
+function ShareDoc($doc)
+{
+	return str_replace(PHP_EOL, '<br />', trim($doc));
+}
+
+function ShareDocResume($doc)
+{
+	$arr = explode(PHP_EOL, $doc);
+	return str_replace('*', '', trim($arr[1]));
+}
