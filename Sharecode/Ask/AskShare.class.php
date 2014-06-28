@@ -9,7 +9,7 @@
  *
  *  @author zsg <xxx@gmail.com>
  */
-class AskAsk extends ShareCommon
+class AskShare extends CommonShare
 {
 	/**
 	 * 这是一个测试方法

@@ -1,5 +1,7 @@
 <?php 
-
+/**
+ *  调用来源查询
+ */
 require '../Share/Share.php';
 
 $where = array();
@@ -8,7 +10,7 @@ if ($apiname != '') {
 	$where['s_api'] = $apiname;
 	$list = ShareCallSource::getAll($where);
 } else {
-	$list = array();
+	$list = ShareCallSource::getAll();
 }
 
 //$allopt = ShareCallSource::allopt();
@@ -23,10 +25,10 @@ if ($apiname != '') {
 <title>共享代码调用查询</title>
 </head>
 <body>
-
+<h2>共享代码调用查询</h2>
 <div>
 	<form type='get' action="">
-	调用api <input type="text" name="apiname" value="<?php echo $apiname;?>" style="width:300px;" />
+	调用api <input type="text" name="s_api" value="<?php echo $apiname;?>" style="width:300px;" />
 	<input type="submit" value="查询" />
 	</form>
 </div>
@@ -56,6 +58,8 @@ if ($apiname != '') {
 	
 	</table>
 </div>
+<?php else: ?>
+<div style="border:1px solid #eee">没找到记录</div>
 <?php endif; ?>
 
 </body>

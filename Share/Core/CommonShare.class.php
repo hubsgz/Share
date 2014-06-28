@@ -3,7 +3,7 @@
  *	共享公共父类
  */
 
-class ShareCommon
+class CommonShare
 {
 	private $__share_cache_time = 0;
 

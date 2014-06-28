@@ -13,6 +13,7 @@ class ShareCallSource
 			'f_project' => $f_project,
 			'f_module' => $f_module,
 			'f_method' => $f_method,
+			'f_ip' => $_SERVER['SERVER_ADDR'],
 			's_api' => $s_api,
 			'calltime' => time()			
 		);

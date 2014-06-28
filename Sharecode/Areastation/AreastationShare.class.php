@@ -9,7 +9,7 @@
  *
  *  @author zsg <xxx@gmail.com>
  */
-class AreastationAreastation extends ShareCommon
+class AreastationShare extends CommonShare
 {
 	/**
 	 * 地区律师列表

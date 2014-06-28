@@ -14,6 +14,7 @@ class ShareBadcode
 			'f_project' => $f_project,
 			'f_module' => $f_module,
 			'f_method' => $f_method,
+			'f_ip' => $_SERVER['SERVER_ADDR'],
 			's_project' => $s_project,
 			's_module' => $s_module,
 			's_method' => $s_method,

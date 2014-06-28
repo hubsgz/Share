@@ -4,15 +4,13 @@
  */
 require '../Share/Share.php';
 
-require_once SHARE_PATH . '/Core/' . 'ShareReflection.class.php';
-
 $trees = ShareReflection::loadAllClass();
 
 $m = ShareGetStr('m');
 if ($m != false) {
 	$moduleDoc = array('name'=>$m);
 
-	$reflector = new ReflectionClass($m);
+	$reflector = new ReflectionClass($m.'Share');
 	$classDoc = $reflector->getDocComment();
 	$moduleDoc['doc'] = $classDoc;
 	$methods = $reflector->getMethods();
@@ -100,7 +98,7 @@ if ($m != false) {
 <?php else: ?>
 <div style="padding:10px; ">	
 
-	<h4><?php echo $moduleDoc['name'];?>.class.php</h4>
+	<h4><?php echo $moduleDoc['name'];?>Share.class.php</h4>
 	<p><?php echo ShareDoc($moduleDoc['doc']);?></p>
 	<?php foreach($moduleDoc['methods'] as $m): ?>
 	<div onclick="toggle(this)" style="width:100%;background:#777777; margin:2px; font-weight:bold; padding:2px;" > 

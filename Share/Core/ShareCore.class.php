@@ -35,20 +35,24 @@ class ShareCore
 		}
 		
 		//判断方法是否存在
-		if (!method_exists($desc, $func)) {
+		if (!$desc->hasMethod($func)) {
 			$this->error(sprintf("method %s not exists in %s", $func, $this->callModule));
 		}
 		
 		$cachekey = md5($this->callModule.$func.serialize($args));
 		$result = ShareCache::get($cachekey);
 		if ($result === false || $this->isUnitTest()) {
+			$methodref = $desc->getMethod($func);
 			$timestart = microtime(true);
-			$result = $desc->$func($args);
+			$module_instance = $desc->newInstance();
+			$result = $methodref->invokeArgs($module_instance, $args);
+			//$result = $desc->$func($args);
+			//$result = call_user_func($func, $args);
 			$timeend = microtime(true);		
 			$spendtime = number_format(($timeend - $timestart)*1000, 4, '.', ''); //'毫秒'
 
-			if ($desc->cacheTime() > 0) {
-				ShareCache::set($cachekey, serialize($result), $desc->cacheTime());
+			if (($cachetime = $desc->getMethod('cacheTime')->invoke($module_instance)) > 0) {
+				ShareCache::set($cachekey, serialize($result), $cachetime);
 			}
 
 			//记录调用来源
@@ -56,7 +60,7 @@ class ShareCore
 
 			$this->logBadcode($func, $args, $spendtime);
 
-			$this->unitTestPrint($func, $args, $spendtime);
+			$this->unitTestPrint($func, $args, $spendtime, $result);
 		} else {
 			if (ShareDebug()) {
 				echo "\n<br>from cache<br>";
@@ -67,19 +71,24 @@ class ShareCore
 		return $result;
 	}
 
-	private function unitTestPrint($func, $args, $spendtime)
+	private function unitTestPrint($func, $args, $spendtime, $result)
 	{
 		if (!$this->isUnitTest()) {
 			return;
 		}		
-		echo "\n".'<br>' . sprintf('Test Api: %s.%s', $this->callModule, $func);
+		echo "\n".'<br><font style="background-color:#eee">' . sprintf('Test Api: %s.%s', $this->callModule, $func) . '</font>';
 		echo "\n".'<br> args: ' . var_export($args, true); 
 		echo "\n".'<br> spentime: ' . $spendtime . ' msec';
+		echo "\n".'<br> result: ' . var_export($result, true) . '';
 		echo "\n\n".'<br><br>';
 	}
 
 	private function logBadcode($func, $args, $spendtime)
 	{
+		if ($this->isUnitTest()) {	//单元测试不记录
+			return;
+		}
+
 		//记录慢的共享方法
 		if (round($spendtime, 4) >= ShareConfig('SLOW_TIME')) {			
 			ShareBadcode::insert($this->f_project, $this->f_module, $this->f_method, $this->callModule.'.'.$func, 
@@ -104,7 +113,7 @@ class ShareCore
 		if ($this->isUnitTest()) {	//单元测试不记录
 			return;
 		}
-
+		
 		$config = ShareConfig();
 		if (!$config['ENABLE_CALLSOURCE_LOG']) {
 			return;
@@ -128,7 +137,10 @@ class ShareCore
 	{
 		return $this->f_project == 'ShareUnitTest';
 	}
-
+	
+	/**
+	 *	获取模块实例
+	 */
 	private function getProjectModuleObj()
 	{
 		$callModule = $this->callModule;
@@ -136,35 +148,37 @@ class ShareCore
 			return array(0, $this->moduleObjCache[$callModule]);
 		}
 		$arr = explode('.', $callModule);
-		$dirName = $arr[0];
-		$className = $arr[1] . '.class.php';
-		$parentClassName = $arr[0] . $arr[0] . '.class.php';
+		$s_project = $arr[0];
+		$s_module = $arr[1];
+		$s_module_classname = $s_module . 'Share';
+		$s_module_file = $s_module . 'Share.class.php';
+		$s_module_parent_file = $arr[0] . 'Share.class.php';
 		
 		$config = ShareConfig();
-		$sharecodePath = SHARE_PATH . DIRECTORY_SEPARATOR . $config['BASE_PATH'];
+		$sharecode_basepath = SHARE_PATH . DIRECTORY_SEPARATOR . $config['BASE_PATH'];
 
-		$classFile = $sharecodePath . DIRECTORY_SEPARATOR . $dirName . DIRECTORY_SEPARATOR . $className;
+		$classFile = $sharecode_basepath . DIRECTORY_SEPARATOR . $s_project . DIRECTORY_SEPARATOR . $s_module_file;
 		if (!file_exists($classFile)) {
-			return array(2, "module {$callModule} not exists");
+			return array(2, "module {$callModule} not exists [require file:".$classFile."]");
 		}
 		
 		//加载父类
-		$parentClassFile = $sharecodePath . DIRECTORY_SEPARATOR . $dirName . DIRECTORY_SEPARATOR . $parentClassName;
+		$parentClassFile = $sharecode_basepath . DIRECTORY_SEPARATOR . $s_project . DIRECTORY_SEPARATOR . $s_module_parent_file;
 		if (file_exists($parentClassFile)) {
 			require_once($parentClassFile);
-		}
-		
+		}		
 		//加载子类
 		require_once($classFile);
 
-		if (!class_exists($arr[1])) {
-			return array(2, "Class '".$arr[1]."' not found");
+		if (!class_exists($s_module_classname)) {
+			return array(2, "Share Module '". $s_project.'.'.$s_module ."' not found [require class:".$s_module_classname."]");
 		}		
-		$obj = new $arr[1]();
+
+		$obj = new ReflectionClass($s_module_classname);
 		
-		//强制继承ShareCommon类
-		if (is_subclass_of($obj, 'ShareCommon') == false) {
-			ShareError("you must extends from ShareCommon!");
+		//强制继承ShareCommon类		
+		if ($obj->isSubclassOf('CommonShare') == false) {
+			ShareError("share module must extends from CommonShare! [".$obj->getName()."]");
 		}
 
 		$this->moduleObjCache[$callModule] = $obj;

@@ -8,6 +8,7 @@ CREATE TABLE `share_callsource` (
   `f_project` varchar(50) NOT NULL DEFAULT '' COMMENT '来源项目',
   `f_module` varchar(50) NOT NULL DEFAULT '' COMMENT '来源模块',  
   `f_method` varchar(50) NOT NULL DEFAULT '' COMMENT '来源方法',
+  `f_ip` varchar(50) NOT NULL DEFAULT '' COMMENT '来源服务器ip',
   `s_api` varchar(50) NOT NULL DEFAULT '' COMMENT '所调用的共享api, 由共享项目.共享模块.共享方法组成',
   `calltime` int(11) default 0 COMMENT '调用时间',      
   PRIMARY KEY  (`id`),
@@ -24,6 +25,7 @@ CREATE TABLE `share_badcode` (
   `f_project` varchar(50) NOT NULL DEFAULT '' COMMENT '来源项目',
   `f_module` varchar(50) NOT NULL DEFAULT '' COMMENT '来源模块',  
   `f_method` varchar(50) NOT NULL DEFAULT '' COMMENT '来源方法',
+  `f_ip` varchar(50) NOT NULL DEFAULT '' COMMENT '来源服务器ip',
   `s_project` varchar(50) NOT NULL DEFAULT '' COMMENT '共享项目',
   `s_module` varchar(50) NOT NULL DEFAULT '' COMMENT '共享模块',  
   `s_method` varchar(50) NOT NULL DEFAULT '' COMMENT '共享方法',
@@ -41,18 +43,3 @@ CREATE TABLE `share_badcode` (
   KEY `s_api` (`s_api`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='慢共享方法记录表';
 
-##
-##  共享方法文档表(不用数据库， 改用文件)
-##
-CREATE TABLE `share_doc_method` (
-  `id` int(11) NOT NULL auto_increment COMMENT '主键',
-  `s_project` varchar(50) NOT NULL DEFAULT '' COMMENT '共享项目',
-  `s_module` varchar(50) NOT NULL DEFAULT '' COMMENT '共享模块',
-  `s_method` varchar(50) NOT NULL DEFAULT '' COMMENT '共享方法',
-  `s_module_doc` varchar(255) NOT NULL DEFAULT '' COMMENT '共享模块文档',
-  `s_method_doc` varchar(255) NOT NULL DEFAULT '' COMMENT '共享方法文档',
-  PRIMARY KEY  (`id`),
-  KEY `s_project` (`s_project`),
-  KEY `s_module` (`s_module`),
-  KEY `s_method` (`s_method`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='共享方法文档方法表';

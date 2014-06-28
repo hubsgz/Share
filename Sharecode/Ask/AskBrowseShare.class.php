@@ -9,7 +9,7 @@
  *
  *  @author zsg <xxx@gmail.com>
  */
-class AskBrowse extends AskAsk
+class AskBrowseShare extends AskShare
 {
 	/**
 	 * 获取最新问题列表

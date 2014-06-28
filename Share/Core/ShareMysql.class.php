@@ -27,7 +27,7 @@ class ShareMysql
 
 	static function getAll($sql)
 	{
-		self::connect();
+		
 		$query = self::_query($sql);
 		
 		$arr = array();
@@ -72,6 +72,7 @@ class ShareMysql
 
 	static function _query($sql)
 	{
+		self::connect();
 		$re = mysql_query($sql, self::$conn);
 		if ($re == false) {
 			$err = sprintf('MySQL Error [%s] [%s] [%s]', mysql_errno(self::$conn) ,mysql_error(self::$conn), $sql);
@@ -88,15 +89,24 @@ class ShareMysqlTool
 		$fields = array_keys($vals);
 		$values = array_values($vals);
 
+		foreach ($values as $k=>$v) {
+			$values[$k] = self::escape_string($v);
+		}
+
 		$sql = "insert into {$table} (`". implode('`,`', $fields) ."`) values ('". implode("','", $values) ."'); "; 
 		return $sql;
+	}
+	
+	static function escape_string($str)
+	{
+		return mysql_real_escape_string($str);
 	}
 	
 	static function querySql($table, $where)
 	{
 		$arr = array("1=1");
 		foreach ($where as $k=>$v) {
-			$arr[] = " $k = '$v' ";
+			$arr[] = " $k = '". self::escape_string($v) . "' ";
 		}
 
 		$sql = "select * from {$table} where ". implode(' and ', $arr) . ";"; 

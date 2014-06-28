@@ -26,7 +26,8 @@ function importRequireClass()
 	require_once SHARE_PATH . '/Core/' . 'ShareCore.class.php';
 	require_once SHARE_PATH . '/Core/' . 'ShareCache.class.php';
 	require_once SHARE_PATH . '/Core/' . 'ShareMysql.class.php';
-	require_once SHARE_PATH . '/Core/' . 'ShareCommon.class.php';
+	require_once SHARE_PATH . '/Core/' . 'CommonShare.class.php';
+	require_once SHARE_PATH . '/Core/' . 'ShareReflection.class.php';
 
 	require_once SHARE_PATH . '/Model/' . 'ShareCallSource.class.php';
 	require_once SHARE_PATH . '/Model/' . 'ShareBadcode.class.php';

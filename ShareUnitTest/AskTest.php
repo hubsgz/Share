@@ -6,8 +6,9 @@
 require '../Share/ShareTest.php';
 
 
-//最新10条咨询
+//最新10条咨询测试
 Share::module('Ask.AskBrowse')->newQuestionList(1);
 
-//最新10条咨询
-Share::module('Ask.AskBrowse')->newAnswerList(1);
+//testMethod测试
+Share::module('Ask.AskBrowse')->testMethod(1, 2, array(1));
+
