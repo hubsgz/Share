@@ -40,6 +40,7 @@ if ($apiname != '') {
 	<td>来源项目</td>
 	<td>来源模块</td>
 	<td>来源方法</td>
+	<td>服务器ip</td>
 	<td>调用api</td>
 	<td>调用时间</td>
 	</tr>
@@ -50,6 +51,7 @@ if ($apiname != '') {
 		echo "<td>".$v['f_project']."</td>";
 		echo "<td>".$v['f_module']."</td>";
 		echo "<td>".$v['f_method']."</td>";
+		echo "<td>".$v['f_ip']."</td>";
 		echo "<td>".$v['s_api']."</td>";
 		echo "<td>". date('Y-m-d H:i:s', $v['calltime'])."</td>";
 		echo "</tr>";
