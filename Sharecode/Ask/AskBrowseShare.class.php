@@ -1,11 +1,11 @@
 <?php
 /**
- *	ask项目 -- 问题库
+ *	ask项目 -- 问题库共享代码
  *
  *  @author zsg <xxx@gmail.com>
  */
 /**
- *	ask项目 -- 问题库
+ *	ask项目 -- 问题库共享代码
  *
  *  @author zsg <xxx@gmail.com>
  */

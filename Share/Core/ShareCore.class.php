@@ -17,8 +17,15 @@ class ShareCore
 	{
 		$moduleName = trim($moduleName);
 		$arr = explode('.', $moduleName);
+		$arr1 = array();
+		foreach ($arr as $v) {
+			if (trim($v) != '') {
+				$arr1[] = $v;
+			}	
+		}
+		$arr = $arr1;
 		if ($moduleName == '' || count($arr) != 2) {
-			return array(1, 'wrong moduleName,  moduleName must like Ask.Browse');
+			ShareError('wrong moduleName,  moduleName must like Ask.Browse');
 		}
 		$this->callModule = $moduleName;
 	}
@@ -150,16 +157,16 @@ class ShareCore
 		$arr = explode('.', $callModule);
 		$s_project = $arr[0];
 		$s_module = $arr[1];
-		$s_module_classname = $s_module . 'Share';
-		$s_module_file = $s_module . 'Share.class.php';
-		$s_module_parent_file = $arr[0] . 'Share.class.php';
+		$s_module_classname = $s_project . $s_module . 'Share';
+		$s_module_file = $s_module_classname . '.class.php';
+		$s_module_parent_file = $s_project . 'Share.class.php';
 		
 		$config = ShareConfig();
 		$sharecode_basepath = SHARE_PATH . DIRECTORY_SEPARATOR . $config['BASE_PATH'];
 
 		$classFile = $sharecode_basepath . DIRECTORY_SEPARATOR . $s_project . DIRECTORY_SEPARATOR . $s_module_file;
 		if (!file_exists($classFile)) {
-			return array(2, "module {$callModule} not exists [require file:".$classFile."]");
+			return array(2, "module {$callModule} not exists [f]");
 		}
 		
 		//º”‘ÿ∏∏¿‡

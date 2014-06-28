@@ -27,21 +27,17 @@ class ShareMysql
 
 	static function getAll($sql)
 	{
-		
 		$query = self::_query($sql);
 		
 		$arr = array();
 		while ($row = mysql_fetch_assoc($query)) {
 			$arr[] = $row;
 		}
-
-		self::close();
 		return $arr;
 	}
 
 	static function getOne($sql)
 	{
-		self::connect();
 		$query = self::_query($sql);
 
 		$res = '';
@@ -52,21 +48,17 @@ class ShareMysql
 		} else {
 			$res = '';
 		}
-
-		self::close();
 		return $res;
 	}
 
 	static function execSql($sql, $insertid=true)
 	{
-		self::connect();
 		self::_query($sql);
 
 		$res = true;
 		if ($insertid) {
 			$res = mysql_insert_id(self::$conn);
 		}
-		self::close();
 		return $res;
 	}
 

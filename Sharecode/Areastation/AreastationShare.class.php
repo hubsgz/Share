@@ -34,7 +34,7 @@ class AreastationShare extends CommonShare
 	 * 
 	 * @return array
 	 */
-	public function testMethod($page, $pageSize, $params)
+	public function areatestMethod($page, $pageSize, $params)
 	{
 		return array($page, $pageSize, $params);
 	}

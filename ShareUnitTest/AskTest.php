@@ -5,10 +5,11 @@
 
 require '../Share/ShareTest.php';
 
+//testMethod²âÊÔ
+Share::module('Ask.Browse')->testMethod(1, 2, array(1));
 
 //×îĞÂ10Ìõ×ÉÑ¯²âÊÔ
-Share::module('Ask.AskBrowse')->newQuestionList(1);
+Share::module('Ask.Browse')->newQuestionList(1);
 
-//testMethod²âÊÔ
-Share::module('Ask.AskBrowse')->testMethod(1, 2, array(1));
+
 

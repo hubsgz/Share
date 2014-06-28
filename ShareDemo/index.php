@@ -10,5 +10,5 @@ define('ACTION_NAME', 'index');
 require '../Share/Share.php';
 
 //×îÐÂ10Ìõ×ÉÑ¯
-$list = Share::module('Ask.AskBrowse')->newQuestionList(1);
+$list = Share::module('Ask.Browse')->newQuestionList(1);
 print_r($list);
