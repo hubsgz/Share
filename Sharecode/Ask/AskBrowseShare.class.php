@@ -34,6 +34,11 @@ class AskBrowseShare extends AskShare
 	 */
 	public function newQuestionList01($num)
 	{
+
+
+
+
+
 		return array(111, 222, 'gse21531gse5g4');
 	}
 

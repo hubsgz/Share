@@ -1,6 +1,6 @@
 <?php
 /**
- *	地区站项目单元测试
+ *	地区站项目--Index模块共享代码单元测试
  */
 
 require '../Share/ShareTest.php';

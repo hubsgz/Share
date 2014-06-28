@@ -44,12 +44,20 @@ class ShareCore
 		//判断方法是否存在
 		if (!$desc->hasMethod($func)) {
 			$this->error(sprintf("method %s not exists in %s", $func, $this->callModule));
+		} 
+		$methodref = $desc->getMethod($func);
+
+		//检查方法行数是否超标
+		$linenumdesc = $this->validMethodLineNum($methodref);
+		if ($linenumdesc['pass'] == false) {
+			ShareError(sprintf('[%s error]share method max line num is %d, your method line num is %d',
+				$func,
+				$linenumdesc['maxLineNum'], $linenumdesc['methodLineNum']));
 		}
-		
+
 		$cachekey = md5($this->callModule.$func.serialize($args));
 		$result = ShareCache::get($cachekey);
 		if ($result === false || $this->isUnitTest()) {
-			$methodref = $desc->getMethod($func);
 			$timestart = microtime(true);
 			$module_instance = $desc->newInstance();
 			$result = $methodref->invokeArgs($module_instance, $args);
@@ -76,6 +84,18 @@ class ShareCore
 		}
 	
 		return $result;
+	}
+	
+	private function validMethodLineNum($methodref) 
+	{
+		$start = $methodref->getStartLine();
+		$end = $methodref->getEndLine();		
+		$linenum = $end - $start;
+		$pass = true;
+		if ($linenum > ShareConfig('MAX_LINE_NUM')) {
+			$pass = false;
+		}
+		return array('pass'=>$pass, 'maxLineNum'=>ShareConfig('MAX_LINE_NUM'), 'methodLineNum'=>$linenum);
 	}
 
 	private function unitTestPrint($func, $args, $spendtime, $result)

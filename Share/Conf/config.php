@@ -16,4 +16,6 @@ return array(
 
 	'SLOW_TIME' => 3000,  //单位毫秒， 程序执行超过此时间点， 自动记录到 share_slowapi
 
+	'MAX_LINE_NUM' => 100,		//设置每个方法最多行数， 超过自动报错
+
 );
