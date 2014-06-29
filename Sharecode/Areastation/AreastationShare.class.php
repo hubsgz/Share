@@ -19,6 +19,7 @@ class AreastationShare extends CommonShare
 	 * @params str $params   其它参数
 	 * 
 	 * @return array
+	 * @author zsg
 	 */
 	public function areaLawyerlist($page, $pageSize, $params)
 	{
@@ -33,6 +34,7 @@ class AreastationShare extends CommonShare
 	 * @params str $params   其它参数
 	 * 
 	 * @return array
+	 * @author zsg
 	 */
 	public function areatestMethod($page, $pageSize, $params)
 	{

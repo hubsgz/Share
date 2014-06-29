@@ -7,7 +7,7 @@ class ShareBadcode
 {
 	static $table = 'sharedb.share_badcode';
 
-	static function insert($f_project, $f_module, $f_method, $s_api, $args, $spendtime)
+	static function insert($f_project, $f_module, $f_method, $s_api, $s_author, $args, $spendtime)
 	{
 		list($s_project, $s_module, $s_method) = explode('.', $s_api);
 		$insertdata = array(
@@ -19,6 +19,7 @@ class ShareBadcode
 			's_module' => $s_module,
 			's_method' => $s_method,
 			's_api' => $s_api,
+			's_author' => $s_author,
 			'calltime' => time(),
 			'args' => $args,
 			'spendtime' => $spendtime

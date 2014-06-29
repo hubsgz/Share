@@ -30,6 +30,7 @@ CREATE TABLE `share_badcode` (
   `s_module` varchar(50) NOT NULL DEFAULT '' COMMENT '共享模块',  
   `s_method` varchar(50) NOT NULL DEFAULT '' COMMENT '共享方法',
   `s_api`  varchar(50) NOT NULL DEFAULT '' COMMENT '共享api, 由共享项目.共享模块.共享方法组成',
+  `s_author` varchar(50) NOT NULL DEFAULT '' COMMENT '作者',
   `args` varchar(150) NOT NULL DEFAULT '' COMMENT '调用参数',
   `calltime` int(11) default 0 COMMENT '调用时间',  
   `spendtime` float(10,4) default 0 COMMENT '运行时间',    

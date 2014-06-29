@@ -17,6 +17,7 @@ class AreastationIndexShare extends AreastationShare
 	 * @params str $getnum 获取条数
 	 * 
 	 * @return array
+	 * @author zsg
 	 */
 	public function areaNewAnliList($getnum)
 	{
@@ -29,6 +30,7 @@ class AreastationIndexShare extends AreastationShare
 	 * @params str $getnum 获取条数
 	 * 
 	 * @return array
+	 * @author zsg
 	 */
 	public function areaNewWenjiList($getnum)
 	{

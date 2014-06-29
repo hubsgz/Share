@@ -17,6 +17,7 @@ class AskBrowseShare extends AskShare
 	 * @params str $num 获取条数
 	 * 
 	 * @return array
+	 * @author zsg
 	 */
 	public function newQuestionList($num)
 	{
@@ -31,6 +32,7 @@ class AskBrowseShare extends AskShare
 	 * @params str $num 获取条数
 	 * 
 	 * @return array
+	 * @author zsg
 	 */
 	public function newQuestionList01($num)
 	{

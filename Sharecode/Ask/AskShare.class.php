@@ -19,6 +19,7 @@ class AskShare extends CommonShare
 	 * @params str $params   其它参数
 	 * 
 	 * @return array
+	 * @author zsg
 	 */
 	public function testMethod($page, $pageSize, $params)
 	{

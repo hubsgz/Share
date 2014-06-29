@@ -73,7 +73,7 @@ class ShareCore
 			//记录调用来源
 			$this->logCallResource($func, $args, $spendtime);
 
-			$this->logBadcode($func, $args, $spendtime);
+			$this->logBadcode($methodref, $args, $spendtime);
 
 			$this->unitTestPrint($func, $args, $spendtime, $result);
 		} else {
@@ -110,15 +110,19 @@ class ShareCore
 		echo "\n\n".'<br><br>';
 	}
 
-	private function logBadcode($func, $args, $spendtime)
+	private function logBadcode($methodref, $args, $spendtime)
 	{
 		if ($this->isUnitTest()) {	//单元测试不记录
 			return;
 		}
+		$func = $methodref->getName();
+		$s_author = ShareComment::getAuthor($methodref->getDocComment());
 
 		//记录慢的共享方法
 		if (round($spendtime, 4) >= ShareConfig('SLOW_TIME')) {			
-			ShareBadcode::insert($this->f_project, $this->f_module, $this->f_method, $this->callModule.'.'.$func, 
+			ShareBadcode::insert($this->f_project, $this->f_module, $this->f_method, 
+				$this->callModule.'.'.$func, 
+				$s_author,
 				serialize($args), $spendtime);
 		}
 	}

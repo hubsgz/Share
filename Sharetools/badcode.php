@@ -43,6 +43,7 @@ $list = ShareBadcode::getAll($where);
 	<td>来源方法</td>
 	<td>服务器ip</td>
 	<td>调用api</td>
+	<td>作者</td>
 	<td>调用参数</td>
 	<td>调用时间</td>
 	<td>调用执行时间</td>
@@ -56,6 +57,7 @@ $list = ShareBadcode::getAll($where);
 		echo "<td>".$v['f_method']."</td>";
 		echo "<td>".$v['f_ip']."</td>";
 		echo "<td>".$v['s_api']."</td>";
+		echo "<td>".$v['s_author']."</td>";
 		echo "<td>". var_export(unserialize($v['args']), true)."</td>";
 		echo "<td>". date('Y-m-d H:i:s', $v['calltime'])."</td>";
 		echo "<td>".$v['spendtime']."毫秒</td>";
