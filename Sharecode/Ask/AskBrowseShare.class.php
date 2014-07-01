@@ -18,10 +18,10 @@ class AskBrowseShare extends AskShare
 	 * 
 	 * @return array
 	 * @author zsg
+	 * @cachetime  10
 	 */
 	public function newQuestionList($num)
 	{
-		$this->cacheTime(10);
 		sleep(3);
 		return array(111, 222);
 	}

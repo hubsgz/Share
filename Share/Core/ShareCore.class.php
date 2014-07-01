@@ -54,9 +54,13 @@ class ShareCore
 				$func,
 				$linenumdesc['maxLineNum'], $linenumdesc['methodLineNum']));
 		}
-
-		$cachekey = md5($this->callModule.$func.serialize($args));
-		$result = ShareCache::get($cachekey);
+		//»º´æÊ±¼ä
+		$cachetime = ShareComment::getCacheTime($methodref->getDocComment());
+		$result = false;
+		if ($cachetime > 0) {
+			$cachekey = md5($this->callModule.$func.serialize($args));
+			$result = ShareCache::get($cachekey);
+		}
 		if ($result === false || $this->isUnitTest()) {
 			$timestart = microtime(true);
 			$module_instance = $desc->newInstance();
@@ -66,7 +70,7 @@ class ShareCore
 			$timeend = microtime(true);		
 			$spendtime = number_format(($timeend - $timestart)*1000, 4, '.', ''); //'ºÁÃë'
 
-			if (($cachetime = $desc->getMethod('cacheTime')->invoke($module_instance)) > 0) {
+			if ($cachetime > 0) {
 				ShareCache::set($cachekey, serialize($result), $cachetime);
 			}
 
