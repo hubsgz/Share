@@ -3,6 +3,7 @@
 define('SHARE_PATH', dirname(__FILE__));
 require_once SHARE_PATH . '/Core/' . 'functions.php';
 importRequireClass();
+date_default_timezone_set('Asia/Shanghai');
 
 class Share
 {
