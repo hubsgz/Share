@@ -22,8 +22,6 @@ if ($m != false) {
 		if ($method->getDeclaringClass()->getName() != $reflector->getName()) {
 			continue;
 		}
-		
-		print_r(Reflection::getModifierNames($method->getModifiers()));
 
 		$methodName = $method->getName();
 		$methodDoc = $method->getDocComment();
